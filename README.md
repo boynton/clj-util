@@ -130,6 +130,7 @@ For example:
      (put-file (first machines) "my/local/file" "remote/file")
      (get-file (second machines) "remote/file" "local/file")
      ...)
+```
 
 A more involved example is in the works.
 
