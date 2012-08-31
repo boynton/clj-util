@@ -1,0 +1,7 @@
+lib/*
+.DS_store
+.lein*
+*~
+classes
+target
+clj-util-0.0.1.jar
