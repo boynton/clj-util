@@ -4,8 +4,7 @@
            com.fasterxml.uuid.EthernetAddress
            com.fasterxml.uuid.impl.NameBasedGenerator
            java.security.MessageDigest
-           java.util.UUID)
-  (:gen-class))
+           java.util.UUID))
 
 (defn uuid-from-current-time []
   "Create a time-based UUID from the current time"

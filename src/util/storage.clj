@@ -25,7 +25,7 @@
 
 (defn ^boolean delete-struct [^util.storage.IStructStore store ^String key]
   (.delete store key))
-  
+
 ;;
 ;; binary data plus minimal metadata. The data can be a byte array or an InputStream.
 ;;

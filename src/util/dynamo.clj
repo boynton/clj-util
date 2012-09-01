@@ -13,8 +13,7 @@
    com.amazonaws.services.dynamodb.model.ScanRequest
    com.amazonaws.services.dynamodb.model.DeleteItemRequest
    com.amazonaws.services.dynamodb.model.AttributeValue
-   com.amazonaws.services.dynamodb.model.Key)
-  (:gen-class))
+   com.amazonaws.services.dynamodb.model.Key))
 
 (defn dynamo-structstore
   "Return an IStructStore instance connected to the specified Amazon DynamoDB table. The credentials for the AWS account should be in your environment (see aws.clj)"

@@ -20,20 +20,21 @@ The UUID API is a set of a few simple wrappers for the UUID library written by [
 You can create uuids based on time, URLs, and names (using a UUID as the namespace). Additionally, a function `uuid-to-sortable-string`
 function produces a string for the UUID that sorts correctly for time-based UUIDs.
 
-	(use 'util.uuid)
-	
-	(let [namespace-uuid (uuid-from-url "https://github.com/boynton")
-	      name-uuid (uuid-from-name namespace-uuid "foo")
-	      revision-uuid (uuid-from-current-time)]
-		(println "url-based UUID from 'https://github.com/boynton':" namespace-uuid);
-		(println "using that as a namespace, the name-based UUID for 'foo' is" name-uuid)
-		(println "here is a time-based UUID:" revision-uuid)
-		(println "here is that same UUID as a sortable string:" (uuid-to-sortable-string revision-uuid)))
-		
+```clojure
+(use 'util.uuid)
+
+(let [namespace-uuid (uuid-from-url "https://github.com/boynton")
+      name-uuid (uuid-from-name namespace-uuid "foo")
+      revision-uuid (uuid-from-current-time)]
+  (println "url-based UUID from 'https://github.com/boynton':" namespace-uuid);                                                                              
+  (println "using that as a namespace, the name-based UUID for 'foo' is" name-uuid)
+  (println "here is a time-based UUID:" revision-uuid)
+  (println "here is that same UUID as a sortable string:" (uuid-to-sortable-string revision-uuid)))
+```	
 
 ### Simple Storage Abstractions
 
-The util.storage namespace provide a couple of simple storage abstractions, one for BLOB storage and one for Structured storage.
+The `util.storage` namespace provide a couple of simple storage abstractions, one for BLOB storage and one for Structured storage.
 
 #### BlobStorage
 
@@ -101,7 +102,7 @@ For example:
 ### AWS services
 
 The above examples work with S3 and DynamoDB, respectively. Both require that you define your amazon credentials in
-the environment, then access them as follows:
+the environment, then access them with `util.aws` as follows:
 
 ```clojure
 (use 'util.storage)

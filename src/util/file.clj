@@ -3,8 +3,7 @@
   (:use util.storage)
   (:use [clojure.java.io :as io])
   (:require [clj-json [core :as json]])
-  (:import java.io.File java.io.ByteArrayOutputStream java.io.FileOutputStream java.io.FileInputStream java.net.URLConnection)
-  (:gen-class))
+  (:import java.io.File java.io.ByteArrayOutputStream java.io.FileOutputStream java.io.FileInputStream java.net.URLConnection))
 
 (defn file-blobstore [dirname]
   ;; files are stored in the directory structure. This requires path parsing. i.e. "<dirname>/some/path/to/my/file"

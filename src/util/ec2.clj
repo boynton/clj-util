@@ -11,8 +11,7 @@
            com.amazonaws.services.ec2.model.TerminateInstancesRequest
            com.amazonaws.services.ec2.model.BlockDeviceMapping
            com.amazonaws.services.ec2.model.CreateTagsRequest
-           com.amazonaws.services.ec2.model.Tag)
-  (:gen-class))
+           com.amazonaws.services.ec2.model.Tag))
 
 (defn- ec2 [cred]
   (AmazonEC2Client. (BasicAWSCredentials. (:access cred) (:secret cred))))

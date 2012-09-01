@@ -9,8 +9,7 @@
    com.amazonaws.services.s3.model.ObjectMetadata
    com.amazonaws.services.s3.model.ListObjectsRequest
    com.amazonaws.services.s3.model.GetObjectRequest
-   com.amazonaws.services.s3.model.PutObjectRequest)
-  (:gen-class))
+   com.amazonaws.services.s3.model.PutObjectRequest))
 
 (defn s3-buckets []
   (let [cred (aws-credentials)

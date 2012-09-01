@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>boynton</groupId>
   <artifactId>clj-util</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <name>clj-util</name>
   <description>Some simple clojure utilities</description>
   <url>https://github.com/boynton/clj-util</url>
@@ -17,7 +17,7 @@
   <scm>
     <connection>scm:git:git://github.com/boynton/clj-util.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/boynton/clj-util.git</developerConnection>
-    <tag>6e72912982caa94471b5c46116e3e67b096689bf</tag>
+    <tag>15c52d9628f6ea5f15fb299182a12350229713f3</tag>
     <url>https://github.com/boynton/clj-util</url>
   </scm>
   <build>
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk</artifactId>
-      <version>1.3.14</version>
+      <version>1.3.18</version>
     </dependency>
     <dependency>
       <groupId>net.schmizz</groupId>

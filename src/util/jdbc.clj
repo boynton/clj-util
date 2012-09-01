@@ -3,8 +3,7 @@
   (:use util.storage)
   (:use [clojure.java.io :as io])
   (:require [clj-json [core :as json]])
-  (:require [clojure.java.jdbc :as sql])
-  (:gen-class))
+  (:require [clojure.java.jdbc :as sql]))
 
 ;;
 ;; Each struct is assumed to be limited in size to 64k of serialized JSON
@@ -28,7 +27,7 @@
         (assoc base :structs results)))
 
     (proxy [util.storage.IStructStore] []
-      
+
       (^clojure.lang.IPersistentMap scan [^String prefix ^String skip ^Number limit]
         (sql/with-connection settings
           (let [lim (if limit (str " limit " limit) "")]

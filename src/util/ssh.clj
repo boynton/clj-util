@@ -8,8 +8,7 @@
            net.schmizz.sshj.transport.verification.HostKeyVerifier
            net.schmizz.sshj.userauth.keyprovider.OpenSSHKeyFile
            net.schmizz.sshj.common.IOUtils
-           net.schmizz.sshj.common.StreamCopier)
-  (:gen-class))
+           net.schmizz.sshj.common.StreamCopier))
 
 (defn- endpoint-connection [endpoint wait]
   (if (string? endpoint)
