@@ -2,7 +2,6 @@
   (:use util.uuid)
   (:use util.storage)
   (:use [clojure.java.io :as io])
-  (:require [clj-json [core :as json]])
   (:import java.io.File java.io.ByteArrayOutputStream java.io.FileOutputStream java.io.FileInputStream java.net.URLConnection))
 
 (defn file-blobstore [dirname]
@@ -35,4 +34,17 @@
         (let [file (File. root key)]
           (.delete file))))))
 
-;; TO DO: file-structstore, that is basically an in-memory structure that can load/store to a single file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
