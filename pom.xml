@@ -17,7 +17,7 @@
   <scm>
     <connection>scm:git:git://github.com/boynton/clj-util.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/boynton/clj-util.git</developerConnection>
-    <tag>469200539a34b94fb5bef014ba92bc5065244b17</tag>
+    <tag>4fb0ac5f2976922595a1748d8b93ac169c025571</tag>
     <url>https://github.com/boynton/clj-util</url>
   </scm>
   <build>
