@@ -175,11 +175,11 @@
   (and (= (:state m) "running")
        (ssh/command m cmd :wait wait :capture capture :append append)))
 
-(defn put-file [m src dst]
+(defn put-file [m src dst & {:keys [mode]}]
   "Puts a file to the remote machine via scp"
   (and m
        (= (:state m) "running")
-       (ssh/put-file m src dst :wait 300)))
+       (ssh/put-file m src dst :wait 300 :mode mode)))
 
 (defn get-file [m src dst]
   "Gets a file from the remote machine via scp"
@@ -187,6 +187,11 @@
        (= (:state m) "running")
        (ssh/get-file m src dst :wait 300)))
 
+(defn write-remote-file [m contents dst & {:keys [wait mode]}]
+  "Puts the contents to a file on the remote machine via scp"
+  (and m
+       (= (:state m) "running")
+       (ssh/write-remote-file m contents dst :wait 300 :mode mode)))
 
 (defn- wait-for-ssh [m & {:keys [wait] :or {wait 60}}]
   (let [end-time (+ (* 1000 (max 1 wait)) (System/currentTimeMillis))

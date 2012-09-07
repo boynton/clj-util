@@ -2,6 +2,7 @@
   (:import java.io.File
            java.io.IOException
            java.io.FileOutputStream
+           java.io.ByteArrayInputStream
            java.util.concurrent.TimeUnit
            net.schmizz.sshj.SSHClient
            net.schmizz.sshj.xfer.FileSystemFile
@@ -39,6 +40,7 @@
               :string
               (let [tmp (if strm (IOUtils/readFully strm) nil)
                     out (if tmp (.toString tmp) nil)]
+                (.join c wait TimeUnit/SECONDS)
                 (let [status (.getExitStatus c)]
                   (if (= 0 (.getExitStatus c))
                     out
@@ -46,6 +48,7 @@
               :console
               (let [copier (StreamCopier. strm System/out)]
                 (.copy copier)
+                (.join c wait TimeUnit/SECONDS)
                 (let [status (.getExitStatus c)]
                   (or
                    (= 0 status)
@@ -56,11 +59,13 @@
                 (or
                  (= 0 (.getExitStatus c))
                  (throw (IOException. (.toString (IOUtils/readFully strm))))))
+              ;;file
               (let [outstrm (FileOutputStream. capture append)
                     copier (StreamCopier. strm outstrm)]
                 (try
                   (.copy copier)
                   (finally (.close outstrm)))
+                (.join c wait TimeUnit/SECONDS)
                 (let [status (.getExitStatus c)]
                   (or
                    (= 0 status)
@@ -68,11 +73,37 @@
           (finally (.close session))))
       (finally (.disconnect connection)))))
 
-(defn put-file [endpoint src dst & {:keys [wait] :or {wait 300}}]
+(defn string-file-source [name contents & {:keys [mode] :or {mode 0644}}]
+  (let [buf (.getBytes contents "UTF-8")
+        len (count buf)]
+    (proxy [net.schmizz.sshj.xfer.LocalSourceFile] []
+      (^String getName [] name)
+      (^long getLength [] len)
+      (getInputStream  [] (ByteArrayInputStream. buf))
+      (^int getPermissions [] mode)
+      (isFile [] true)
+      (isDirectory [] false)
+      (providesAtimeMtime [] false)
+      (getChildren [] nil)
+      (getLastAccessTime [] nil)
+      (getLastModifiedTime [] nil))))
+
+(defn write-remote-file [endpoint contents dst & {:keys [wait mode] :or {wait 300}}]
+  "Puts the string as the contnts a file on the remote machine via scp"
+  (let [connection (endpoint-connection endpoint wait)
+        name (last (.split dst "/"))]
+    (try
+      (do (.upload (.newSCPFileTransfer connection) (string-file-source name contents :mode (or mode 0644)) dst) true)
+      (finally (.disconnect connection)))))
+
+(defn put-file [endpoint src dst & {:keys [wait mode] :or {wait 300}}]
   "Puts a file to the remote machine via scp"
   (let [connection (endpoint-connection endpoint wait)]
     (try
-      (do (.upload (.newSCPFileTransfer connection) (FileSystemFile. src) dst) true)
+      (let [s (FileSystemFile. src)]
+        (if mode (.setPermissions s mode))
+        (.upload (.newSCPFileTransfer connection) s dst)
+        true)
       (finally (.disconnect connection)))))
 
 (defn get-file [endpoint src dst & {:keys [wait] :or {wait 300}}]
@@ -81,4 +112,3 @@
     (try
       (do (.download (.newSCPFileTransfer connection) src (FileSystemFile. dst)) true)
       (finally (.disconnect connection)))))
-
