@@ -11,7 +11,7 @@ The [Leiningen](http://github.com/technomancy/leiningen) dependency should look 
 Leiningen
 
 ```clojure
-[boynton/clj-util "0.0.3"]
+[boynton/clj-util "0.0.4"]
 ```
 
 ### Using UUIDs
