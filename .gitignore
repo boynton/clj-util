@@ -9,3 +9,4 @@ native
 notes
 .classpath
 *.log
+pom.xml

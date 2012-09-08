@@ -135,9 +135,9 @@ For example:
 
 A more involved example is in the works.
 
-#### supervise, zookeeper, storm
+#### Supervise, Zookeeper, Storm
 
-These are minimal (as in: very primitive) utilities to deploy Bernstein's `daemontools`  [daemontools](http://cr.yp.to/daemontools.html),
+These are minimal (as in: very primitive) utilities to deploy Bernstein's [daemontools](http://cr.yp.to/daemontools.html),
 [Apache Zookeeper](http://zookeeper.apache.org), and [Storm](https://github.com/nathanmarz/storm) to the cloud, using the `util.ec2` package.
 
 For example, to deploy a 6 node (1 zookeeper, 1 nimbus, and 4 workers) Storm cluster to EC2:
