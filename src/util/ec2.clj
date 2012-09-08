@@ -220,7 +220,10 @@
         (doall (ec2-tag-instances ids cluster user))
         (if wait
           (wait-for-pending-ids ids wait))
-        (map machine ids)))))
+        (let [result (running-matchines cluster)]
+          (if (not (= (count result) (count ids)))
+            (println "WARNING: only" (count result) "machines launched of a total of" (count ids)))
+          result)))))
 
 
 (defmacro create-machine [name & rest]

@@ -11,7 +11,7 @@ The [Leiningen](http://github.com/technomancy/leiningen) dependency should look 
 Leiningen
 
 ```clojure
-[boynton/clj-util "0.0.4"]
+[boynton/clj-util "0.0.5"]
 ```
 
 ### Using UUIDs
@@ -134,6 +134,25 @@ For example:
 ```
 
 A more involved example is in the works.
+
+#### supervise, zookeeper, storm
+
+These are minimal (as in: very primitive) utilities to deploy Bernstein's `daemontools`  [daemontools](http://cr.yp.to/daemontools.html),
+[Apache Zookeeper](http://zookeeper.apache.org), and [Storm](https://github.com/nathanmarz/storm) to the cloud, using the `util.ec2` package.
+
+For example, to deploy a 6 node (1 zookeeper, 1 nimbus, and 4 workers) Storm cluster to EC2:
+
+```clojure
+(use 'util.storm)
+
+(deploy-storm :workers 4)
+```
+
+It takes less than 15 minutes for everything to get running, initialized, deployed, and launched under supervision. It automatically
+modifies your local `~/.storm/storm.yaml` file so that the local storm client connects to it. It uses a bunch of defaults which
+should probably be made overridable, but it is a starting point, anyway. This is not meant to replace a more comprehensive solution
+like Pallet/JClouds, but I had trouble debugging problems with that system, so I wrote this quick hack for playing around. Don't
+take it too seriously :-)
 
 
 ## License

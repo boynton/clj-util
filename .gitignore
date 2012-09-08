@@ -7,3 +7,5 @@ target
 clj-util-*.jar
 native
 notes
+.classpath
+*.log
