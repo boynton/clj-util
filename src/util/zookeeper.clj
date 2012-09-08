@@ -17,32 +17,6 @@ dataDir=%s
 clientPort=2181
 " dir))
 
-(defn generate-zoo-run []
-  (format "#!/bin/bash
-start-foreground
-export ZOOBINDIR=\".\"
-if [ \"x$JMXLOCALONLY\" = \"x\" ]
-then
-    JMXLOCALONLY=false
-fi
-if [ \"x$JMXDISABLE\" = \"x\" ]
-then
-    echo \"JMX enabled by default\"
-    # for some reason these two options are necessary on jdk6 on Ubuntu
-    #   accord to the docs they are not necessary, but otw jconsole cannot
-    #   do a local attach
-    ZOOMAIN=\"-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=$JMXLOCALONLY org.apache.zookeeper.server.quorum.QuorumPeerMain\"
-else
-    echo \"JMX disabled by user request\"
-    ZOOMAIN=\"org.apache.zookeeper.server.quorum.QuorumPeerMain\"
-fi
-if [ \"x$2\" != \"x\" ]
-then
-    ZOOCFG=\"$ZOOCFGDIR/$2\"
-fi
-cd bin && . ./zkEnv.sh && java  \"-Dzookeeper.log.dir=${ZOO_LOG_DIR}\" \"-Dzookeeper.root.logger=${ZOO_LOG4J_PROP}\" -cp \"$CLASSPATH\" $JVMFLAGS $ZOOMAIN \"$ZOOCFG\"
-"))
-
 (defn init-zookeeper [m & {:keys [capture data-dir] :or {capture ZK_LOG_FILE}}]
   (when m
     (deploy-supervise m) ;;make sure we have supervise deployed already
