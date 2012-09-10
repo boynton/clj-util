@@ -220,7 +220,7 @@
         (doall (ec2-tag-instances ids cluster user))
         (if wait
           (wait-for-pending-ids ids wait))
-        (let [result (running-matchines cluster)]
+        (let [result (running-machines cluster)]
           (if (not (= (count result) (count ids)))
             (println "WARNING: only" (count result) "machines launched of a total of" (count ids)))
           result)))))
