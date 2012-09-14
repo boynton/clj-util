@@ -41,7 +41,7 @@ mkdir -p /var/service || exit 1
       (command m "sudo yum install -y make" :capture capture)
       (command m "sudo yum install -y gcc-c++" :capture capture)
       (write-remote-file m conf fname :mode 0755)
-      (command m (format "sudo %s" fname :capture capture))))
+      (command m (format "sudo %s" fname) :capture capture)))
   m)
 
 (defn supervise
@@ -51,7 +51,7 @@ mkdir -p /var/service || exit 1
   (command m (format "sudo chmod 1755 /var/service/%s" name) :capture capture)
   (let [tmpfile (format "/tmp/supervise-%s" (int (rand 1000)))]
     (write-remote-file m (generate-supervise-run-script cmd user) tmpfile)
-    (command m (format "sudo cp %s /var/service/%s/run"  tmpfile name))
-    (command m (format "sudo chmod 700 /var/service/%s/run" name))
+    (command m (format "sudo cp %s /var/service/%s/run"  tmpfile name) :capture capture)
+    (command m (format "sudo chmod 700 /var/service/%s/run" name) :capture capture)
     (command m (format "sudo ln -s /var/service/%s /service/%s" name name) :capture capture)
     m))

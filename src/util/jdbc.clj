@@ -29,7 +29,7 @@
         (println "database created")))
 
     (let [ps-insert (.prepareStatement db "INSERT INTO asset(key,data) VALUES(?,?)")
-          ps-update (.prepareStatement db "UPDATE asset SET key=?, data=? WHERE key=?")
+          ps-update (.prepareStatement db "UPDATE asset SET data=? WHERE key=?")
           ps-get (.prepareStatement db "SELECT data from asset WHERE key=?")
           ps-delete (.prepareStatement db "DELETE from asset WHERE key=?")
 
@@ -61,9 +61,8 @@
 
           update-or-insert (fn [key struct]
                              (let [data (struct->json struct)]
-                               (.setString ps-update 1 key)
-                               (.setString ps-update 2 data)
-                               (.setString ps-update 3 key)
+                               (.setString ps-update 1 data)
+                               (.setString ps-update 2 key)
                                (let [count (.executeUpdate ps-update)]
                                  (if (= 0 count)
                                    (do

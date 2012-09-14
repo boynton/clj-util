@@ -34,8 +34,8 @@
     (let [reservations (.describeInstances *ec2*)
           filter-instance (if cluster (fn [instance] (some #(and (= "Cluster" (.getKey %)) (= cluster (.getValue %))) (.getTags instance))) identity)]
       (flatten
-       (map (fn [reservation] (filter filter-instance (.getInstances reservation)))
-            (.getReservations reservations))))))
+       (doall (map (fn [reservation] (filter filter-instance (.getInstances reservation)))
+            (.getReservations reservations)))))))
 
 (defn- ec2-instance [id]
   (let [instReq (DescribeInstancesRequest.)]
@@ -54,7 +54,7 @@
   (.terminateInstances *ec2* (TerminateInstancesRequest. ids)))
 
 (defn- ec2-regions []
-  (map (fn [x] (bean x)) (seq (.getRegions (.describeRegions *ec2*)))))
+  (doall (map (fn [x] (bean x)) (seq (.getRegions (.describeRegions *ec2*))))))
 
 (defn- ec2-zones []
   (.describeAvailabilityZones *ec2*))
@@ -64,14 +64,14 @@
         names (map (fn [i] (str name "-" i)) (range 0 cnt))
         user-tag (Tag. "User" user)
         cluster-tag (Tag. "Cluster" name)]
-    (map (fn [inst-id inst-name]
+    (doall (map (fn [inst-id inst-name]
            (let [tr (CreateTagsRequest.)]
              (.setResources tr [inst-id])
              (.setTags tr [(Tag. "Name" inst-name) cluster-tag user-tag])
              (.createTags *ec2* tr)
              inst-id))
          ids
-         names)))
+         names))))
 
 ;; Create a cluster of machines. The cluster name is required, and used to tag the instances, Returns the list of instance-ids for the machines
 ;; instance id
@@ -85,7 +85,7 @@
         (.setBlockDeviceMappings req [(-> (BlockDeviceMapping.) (.withDeviceName bdev) (.withVirtualName vdev))])))
     (let [resp (.runInstances *ec2* req)
           instances (.getInstances (.getReservation resp))]
-      (map (fn [i] (.getInstanceId i)) instances))))
+      (doall (map (fn [i] (.getInstanceId i)) instances)))))
 
 ;; Wait for as long as the instance maintains the specified state, or until the wait time in seconds elapses. The id is returned for successful state change, nil for timeout
 (defn- ec2-wait-while-state [id state wait]
@@ -207,7 +207,7 @@
 
 (defn wait-for-pending-ids [ids timeout]
   (let [alive (doall (map (fn [id] (if (= :timeout (ec2-wait-while-state id "pending" timeout)) nil id)) ids))]
-    (doall (map (fn [id] (if id (if (= :timeout (wait-for-ssh (machine id) :timeout timeout)) nil id) nil)) alive))))
+    (doall (map (fn [id] (if id (if (= :timeout (wait-for-ssh (machine id) :wait timeout)) nil id) nil)) alive))))
 
 
 (defn create-cluster [cluster cnt & {:keys [ami type keypair user security count wait blockdev]
@@ -216,14 +216,11 @@
   (let [ms (machines cluster)]
     (if (seq ms)
       (throw (Exception. (str "Cluster already exists: " cluster)))
-      (let [ids (doall (ec2-create-instances cnt ami type keypair security blockdev))]
-        (doall (ec2-tag-instances ids cluster user))
+      (let [ids (ec2-create-instances cnt ami type keypair security blockdev)]
+        (ec2-tag-instances ids cluster user)
         (if wait
           (wait-for-pending-ids ids wait))
-        (let [result (running-machines cluster)]
-          (if (not (= (count result) (count ids)))
-            (println "WARNING: only" (count result) "machines launched of a total of" (count ids)))
-          result)))))
+        (running-machines cluster)))))
 
 
 (defmacro create-machine [name & rest]
@@ -234,5 +231,5 @@
                                     keypair  "ec2keypair" user "ec2-user" security "default" wait 300}}]
    (let [m (first (create-cluster name 1 :wait true :timeout wait))]
      (if wait
-       (wait-for-ssh m :timeout wait))
+       (wait-for-ssh m :wait wait))
      (machine (:id m)))) ;;get an up-to-date reading on its state

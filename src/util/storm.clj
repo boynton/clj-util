@@ -46,7 +46,6 @@ drpc.servers:
     fname))
 
 (defn run-storm [& {:keys [workers capture] :or {workers 2 capture STORM_LOG}}]
-  (deploy-zookeeper :capture capture)
   (let [zk (deploy-zookeeper :capture capture)
         nimbus (install-storm (create-machine "nimbus" :type "m1.large"))
         workers (create-cluster "worker" workers :type "m1.large") ;;c1.xlarge is what storm-deploy uses. This should paramaterized
@@ -55,16 +54,16 @@ drpc.servers:
     (doall (map install-storm workers)) ;; use pmap? only if I handle merged log files bettter
     (let [remote-conf (generate-storm-yaml (:cluster-ip nimbus) (:cluster-ip zk))]
       (doall (map (fn [m] (write-remote-file m remote-conf "storm/conf/storm.yaml" :mode 0644)) storm-nodes)))
-    
+
     (let [home (.trim (command nimbus "pwd" :capture :string))
           storm-home (format "%s/storm" home)]
       (supervise nimbus "storm-nimbus" (format "%s/bin/storm nimbus" storm-home) :capture capture)
-      
+
       ;;(command nimbus "mkdir -p ui//supervisor && echo created ui directory" :capture capture)
       ;;(write-remote-file nimbus (storm-run-file "ui" "ui" home) "ui/run" :mode 0700)
       ;;(command nimbus "sudo nohup ui/run; sleep 1" :capture capture)
       (supervise nimbus "storm-ui" (format "%s/bin/storm ui" storm-home) :capture capture)
-      
+
       (doall (map (fn [worker] ;; pmap?
                     ;;(command worker "mkdir -p worker/supervisor && echo created worker directory" :capture capture)
                     ;;(write-remote-file worker (storm-run-file "worker" "supervisor" home) "worker/run" :mode 0700)
@@ -73,17 +72,17 @@ drpc.servers:
                   workers)))
 
     (update-local-storm-conf (generate-storm-yaml (:ip nimbus) (:ip zk))) ;;so our local storm client connects to this cluster
-    
+
     cluster))
 
 (defn storm-deployed? []
   (if (first (machines "nimbus")) true false))
-  
+
 (defn deploy-storm [& {:keys [workers capture] :or {workers 2 capture STORM_LOG}}]
   (let [m (first (machines "nimbus"))]
     (or m (run-storm :workers workers :capture capture))))
 
-(defn stop-storm []  
+(defn stop-storm []
   (destroy-cluster ZK_NAME)
   (destroy-cluster "nimbus")
   (destroy-cluster "worker")

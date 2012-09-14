@@ -11,7 +11,7 @@ The [Leiningen](http://github.com/technomancy/leiningen) dependency should look 
 Leiningen
 
 ```clojure
-[boynton/clj-util "0.0.6"]
+[boynton/clj-util "0.0.7"]
 ```
 
 ### Using UUIDs
@@ -118,7 +118,7 @@ The credentials are fetched with the `aws-credentials` function in util.aws.
 
 #### EC2
 
-There also is an interface ro EC2 for provisioning and talking to clusters of machines in the cloud.
+There also is an interface to EC2 for provisioning and talking to clusters of machines in the cloud.
 
 For example:
 
@@ -135,7 +135,7 @@ For example:
 
 A more involved example is in the works.
 
-#### Supervise, Zookeeper, Storm
+#### Supervise, Zookeeper, Storm, S4
 
 These are minimal (as in: very primitive) utilities to deploy Bernstein's [daemontools](http://cr.yp.to/daemontools.html),
 [Apache Zookeeper](http://zookeeper.apache.org), and [Storm](https://github.com/nathanmarz/storm) to the cloud, using the `util.ec2` package.
@@ -153,6 +153,19 @@ modifies your local `~/.storm/storm.yaml` file so that the local storm client co
 should probably be made overridable, but it is a starting point, anyway. This is not meant to replace a more comprehensive solution
 like Pallet/JClouds, but I had trouble debugging problems with that system, so I wrote this quick hack for playing around. Don't
 take it too seriously :-)
+
+The same thing works for [S4](http://incubator.apache.org/s4/), now that v0.5 makes things easier:
+
+```clojure
+(use 'util.s4)
+
+(deploy-s4 "my-cluster" :nodes 4)
+
+(status-s4 "my-cluster")
+```
+
+The difference is that for s4, the cluster is dedicated to a logical s4 "cluster". Different partitioning (and node allocation)
+requires deploying different clusters.
 
 
 ## License
