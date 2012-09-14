@@ -1,4 +1,4 @@
-(defproject boynton/clj-util "0.0.6"
+(defproject boynton/clj-util "0.0.7"
   :description "Some simple clojure utilities"
   :url "https://github.com/boynton/clj-util"
   :license {:name "Eclipse Public License"
