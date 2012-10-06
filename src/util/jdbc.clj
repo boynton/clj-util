@@ -38,7 +38,7 @@
                       (if (< i n)
                         (recur (inc i) (conj! v i))
                         (persistent! v))))
-
+          
           key-data-results (fn [rs]
                              (let [v (transient [])]
                                (loop []
@@ -79,11 +79,9 @@
             (if prefix
               (let [stop (str (.substring prefix 0 (dec (count prefix))) (char (+ 1 (int (last prefix)))))]
                 (if skip
-                  (scan-results (.executeQuery stmt (str "SELECT key, data FROM asset WHERE key > '" skip "' AND '" key "' < '" stop "'" limit)))
-                  (scan-results (.executeQuery stmt (str "SELECT key, data FROM asset WHERE key >= '" prefix "' AND '" key "' < '" stop "'" limit))))
-                (if skip
-                  (scan-results (.executeQuery stmt (str "SELECT key, data FROM asset WHERE key > '" stop "'" limit)))
-                  (scan-results (.executeQuery stmt (str "SELECT key, data FROM asset" limit))))))))
+                  (scan-results (.executeQuery stmt (str "SELECT key, data FROM asset WHERE key > '" skip "' AND key < '" stop "'")) limit)
+                  (scan-results (.executeQuery stmt (str "SELECT key, data FROM asset WHERE key >= '" prefix "' AND key < '" stop "'")) limit)))
+              (scan-results (.executeQuery stmt "SELECT key, data FROM asset") limit))))
 
         (^clojure.lang.IPersistentMap put [^String key ^clojure.lang.IPersistentMap struct]
           (update-or-insert key struct)

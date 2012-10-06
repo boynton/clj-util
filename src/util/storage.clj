@@ -51,23 +51,23 @@
                              base (if (and last-key limit (= (count results) limit)) {:more last-key} {})]
                          (assoc base :structs (seq results))))
         ]
-    
+
     (proxy [util.storage.IStructStore] []
-      
+
       (^clojure.lang.IPersistentMap put [^String key ^clojure.lang.IPersistentMap struct]
         (swap! state assoc key struct))
-          
+
       (^clojure.lang.IPersistentMap get [^String key]
         (get @state key))
 
       (^clojure.lang.ISeq multiget [^clojure.lang.ISeq keys]
         (let [s @state]
           (doall (map (fn [key] (get s key)) keys))))
-      
+
       (^Boolean multiput [^clojure.lang.IPersistentMap bindings]
         (swap! state merge bindings)
         true)
-    
+
       (^clojure.lang.IPersistentMap scan [^String prefix ^String skip ^Number limit]
         (let [s @state]
           (if prefix
@@ -80,7 +80,7 @@
               (if limit
                 (scan-results (take limit (seq s)) limit)
                 {:structs s})))))
-      
+
       (^Boolean delete [^String key]
         (swap! state dissoc key)
         true)
