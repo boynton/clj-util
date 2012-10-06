@@ -10,3 +10,4 @@ notes
 .classpath
 *.log
 pom.xml
+local/*
